@@ -38,37 +38,41 @@ def doubanTop250_spider(pageNumber):
                 booksoup = BeautifulSoup(urllib2.urlopen(url))
             except Exception,e:
                 continue
-            
-            #book_name = str(booksoup.find('div',{'id':'wrapper'}))
-            #print book_name
-            #print 'name '
+
             name = booksoup.find('span',{'property':'v:itemreviewed'}).text
             #print name
-            book_info = str(booksoup.find('div',{'id':'info'})).strip('\n')
+            book_info = str(booksoup.find('div',{'id':'info'}))
             #print book_info
-            
             author = re.findall(r'<a class="" href=".*?">(.*?)</a>', book_info)[0].decode('utf8')
-            press = re.search(r'出版社:</span>(.*?)<br />', book_info).group(1).decode('utf8')
+            press = re.search(r'出版社:</span>(.*?)<br />', book_info).group(1).strip().decode('utf8')
             try:
-                original = re.search(r'原作名:</span>(.*?)<br />', book_info).group(1).decode('utf8')
+                original = re.search(r'原作名:</span>(.*?)<br />', book_info).group(1).strip().decode('utf8')
             except Exception,e:
                 original = ''
             try:
                 translater = re.findall(r'<a class="" href=".*?">(.*?)</a>', book_info)[1].decode('utf8')
             except Exception,e:
                 translater = ''
-            publishDate = re.search(r'出版年:</span>(.*?)<br />', book_info).group(1).decode('utf8')
-            pages = re.search(r'页数:</span>(.*?)<br />', book_info).group(1).decode('utf8')
-            price = re.search(r'定价:</span>(.*?)<br />', book_info).group(1).decode('utf8')
-            binding = re.search(r'装帧:</span>(.*?)<br />', book_info).group(1).decode('utf8')
-            ISBN = re.search(r'ISBN:</span>(.*?)<br />', book_info).group(1).decode('utf8')
-
+            try:
+                publishDate = re.search(r'出版年:</span>(.*?)<br />', book_info).group(1).strip().decode('utf8')
+            except Exception,e:
+                publishDate = ''
+            try:
+                pages = re.search(r'页数:</span>(.*?)<br />', book_info).group(1).decode('utf8')
+            except Exception,e:
+                pages = ''
+            price = re.search(r'定价:</span>(.*?)<br />', book_info).group(1).strip().decode('utf8')
+            try:
+                binding = re.search(r'装帧:</span>(.*?)<br />', book_info).group(1).strip().decode('utf8')
+            except Exception,e:
+                binding = ''
+            try:
+                ISBN = re.search(r'ISBN:</span>(.*?)<br />', book_info).group(1).decode('utf8')
+            except Exception,e:
+                ISBN = ''
             book_interest = booksoup.find('div',{'id':'interest_sectl'})
             score = book_interest.find('strong',{'class':'ll rating_num '}).text
             scoreNum = book_interest.find('span',{'property':'v:votes'}).text
-
-            #related_info = booksoup.find('div',{'class':'related_info'})
-            #print related_info
             summary = booksoup.find('div',{'class':'intro'}).text
             #print summary
             item = [name, url, author, press, original, translater, publishDate, pages, price, binding, ISBN, score, scoreNum, summary]
