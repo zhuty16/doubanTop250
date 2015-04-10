@@ -68,7 +68,7 @@ def doubanTop250_spider(pageNumber):
 
 def write_csv(films):
     '''写数据'''
-    with open('result.csv', 'ab') as f:
+    with open('result.csv', 'wb') as f:
         f.write('\xEF\xBB\xBF')
         writer = csv.writer(f)
         writer.writerow(['电影名称', '链接', '导演', '编剧', '主演', '国家和地区', '语言', '上映日期', '片长', '评分', '评分人数', '剧情简介'])
